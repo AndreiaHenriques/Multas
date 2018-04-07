@@ -7,12 +7,12 @@ namespace Multas.Models
 {
     public class Condutores
     {
-        //Criar o construtor
+        // Criar o construtor
         public Condutores()
         {
-            ListaMultas = new HashSet<Multas>(); //carrega as multas
+            ListaMultas = new HashSet<Multas>(); // carrega as multas
         }
-        public int ID { get; set; } //pk
+        public int ID { get; set; } // pk
 
         public string Nome { get; set; }
 
@@ -28,8 +28,8 @@ namespace Multas.Models
 
         public DateTime DataValidadeCarta { get; set; }
 
-        //Criar uma lista de multas recebidas pelo Condutor
-        public virtual ICollection<Multas> ListaMultas { get; set; } //coleção de multas
+        // Criar uma lista de multas recebidas pelo Condutor
+        public virtual ICollection<Multas> ListaMultas { get; set; } // coleção de multas
 
     }
 }
