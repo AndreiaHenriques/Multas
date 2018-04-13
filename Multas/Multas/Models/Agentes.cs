@@ -18,20 +18,19 @@ namespace Multas.Models
         public int ID { get; set; } // chave primária
 
         // dados do Agente
-        [Required(ErrorMessage ="O {0} é de preenchimento obrigatório")]
-        [RegularExpression("A-ZÂÁÓÉÍ][a-záéíóúàèìòùâêîôûãõçäëïöüñ]+(( | e | de | da | das | do | d' | - |)A-ZÂÁÓÉÍ][a-záéíóúàèìòùâêîôûãõçäëïöüñ]+) {1,3} ",
-            ErrorMessage ="O {0} só aceita letras. Cada nome deve começar por letra maiuscula seguido de letras minusculas")]
-        [StringLength(40, ErrorMessage ="O {0} só aceita {1} caracteres.")]
-
+        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
+            [RegularExpression("A-ZÂÁÓÉÍ][a-záéíóúàèìòùâêîôûãõçäëïöüñ]+(( | e | de | da | das | do | d' | - |)A-ZÂÁÓÉÍ][a-záéíóúàèìòùâêîôûãõçäëïöüñ]+) {1,3} ",
+            ErrorMessage = "O {0} só aceita letras. Cada nome deve começar por letra maiuscula seguido de letras minusculas")]
+        [StringLength(40, ErrorMessage = "O {0} só aceita {1} caracteres.")]
         public string Nome { get; set; }
 
         [Required(ErrorMessage ="A {0} é de preenchimento obrigatório")]
         public string Fotografia { get; set; }
 
         // local de trabalho do Agente
-        [Required(ErrorMessage ="A {0} é de preenchimento obrigatório")]
-        [RegularExpression ("[A-Za-z0-9ç -]+", 
-            ErrorMessage ="Escreva um nome v] válido de uma esquadra...")]
+        [Required(ErrorMessage = "A {0} é de preenchimento obrigatório")]
+            [RegularExpression("([A-Za-z0-9záéíóúàèìòùâêîôûãõçäëöüïñ -]+)+",
+            ErrorMessage = "Escreva um nome válido de uma esquadra...")]
         public string Esquadra { get; set; }
 
         // Criar uma lista de multas aplicadas pelo Agente
