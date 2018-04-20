@@ -35,9 +35,9 @@ namespace Multas.Controllers
             // int? id ---> O '?' informa que o parâmetro é de preenchimento facultativo
         {
             // caso não haja ID, nada é feito
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (id == null) {
+                // return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                 return RedirectToAction("Index");
             }
 
             // pesquisa os dados do Agente, cujo ID foi fornecido
@@ -140,9 +140,9 @@ namespace Multas.Controllers
         // GET: Agentes/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (id == null) {
+                // return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                   return RedirectToAction("Index");
             }
             Agentes agentes = db.Agentes.Find(id);
             if (agentes == null)
@@ -173,13 +173,13 @@ namespace Multas.Controllers
         // GET: Agentes/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (id == null) {
+                // return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index"); // redireciona para a página de 
             }
             Agentes agentes = db.Agentes.Find(id);
-            if (agentes == null)
-            {
+
+            if (agentes == null) {
                 return HttpNotFound();
             }
             return View(agentes);
@@ -196,7 +196,7 @@ namespace Multas.Controllers
                 return RedirectToAction("Index");
             }
             catch(Exception) {
-                ModelState.AddModelError("", string.Format("Aconteceu um erro na eliminação do Agente '{0} ', porque há multas associadas a ele", agentes.Nome));
+                ModelState.AddModelError("", string.Format("Aconteceu um erro na eliminação do Agente '{0}', porque há multas associadas a ele", agentes.Nome));
             }
 
             return View(agentes);
