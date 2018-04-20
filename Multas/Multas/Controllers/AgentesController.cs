@@ -64,7 +64,7 @@ namespace Multas.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Nome,Fotografia,Esquadra")] Agentes agente,
+        public ActionResult Create([Bind(Include = "Nome, Esquadra")] Agentes agente,
                                     HttpPostedFileBase carregaFotografia) {
 
             // gerar o ID do novo Agente
@@ -75,6 +75,7 @@ namespace Multas.Controllers
                 novoID = 1;
             }
             agente.ID = novoID; //atribuir o ID deste Agente
+
 
             // ***************************************************************************************************
             // outra hipótese de validar a atribuição de ID
@@ -187,12 +188,18 @@ namespace Multas.Controllers
         // POST: Agentes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Agentes agentes = db.Agentes.Find(id);
-            db.Agentes.Remove(agentes);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+        public ActionResult DeleteConfirmed(int id) {
+                Agentes agentes = db.Agentes.Find(id);
+            try {
+                db.Agentes.Remove(agentes);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch(Exception) {
+                ModelState.AddModelError("", string.Format("Aconteceu um erro na eliminação do Agente '{0} ', porque há multas associadas a ele", agentes.Nome));
+            }
+
+            return View(agentes);
         }
 
         protected override void Dispose(bool disposing)
