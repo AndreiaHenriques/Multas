@@ -9,12 +9,12 @@ using System.Web;
 using System.Web.Mvc;
 using Multas.Models;
 
-namespace Multas.Controllers
-{
+namespace Multas.Controllers {
+
     public class AgentesController : Controller
     {
         // cria um objeto privado que 'referencia' a BD
-        private MultasDb db = new MultasDb();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Agentes
         public ActionResult Index()

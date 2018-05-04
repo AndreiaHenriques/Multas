@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace IdentitySample.Models
+namespace Multas.Models
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
+    /// <summary>
+    /// identifica 
+    /// </summary>
     public class ApplicationUser : IdentityUser
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -17,7 +21,11 @@ namespace IdentitySample.Models
             return userIdentity;
         }
     }
-
+    /// <summary>
+    /// especifica as caracteristicas da base de dados da Autenticação,
+    /// mais,
+    /// as caracteristicas da base de dados do 'negócio' - Multas
+    /// </summary>
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
@@ -35,6 +43,20 @@ namespace IdentitySample.Models
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
+        }
+
+        // dados especificos sobre as Multas
+        //Definir as 'tabelas' da minha base de dados
+        public virtual DbSet<Viaturas> Viaturas { get; set; }
+        public virtual DbSet<Condutores> Condutores { get; set; }
+        public virtual DbSet<Agentes> Agentes { get; set; }
+        public virtual DbSet<Multas> Multas { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder) {
+            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>();
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
