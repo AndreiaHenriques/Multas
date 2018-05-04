@@ -44,9 +44,10 @@ namespace Multas.Controllers
             Agentes agentes = db.Agentes.Find(id);
 
             // valida se foi encontrado algum Agente
-            if (agentes == null)
-            {
-                return HttpNotFound();
+            // se não foi encontrado, nada faz
+            if (agentes == null) {
+                // return HttpNotFound();
+                return RedirectToAction("Index");
             }
 
             // apresenta na View os dados de um Agente
@@ -54,8 +55,7 @@ namespace Multas.Controllers
         }
 
         // GET: Agentes/Create
-        public ActionResult Create()
-        {
+        public ActionResult Create() {
             return View();
         }
 
@@ -71,12 +71,11 @@ namespace Multas.Controllers
             int novoID = 0;
             if (db.Agentes.Count() != 0) {
                 novoID = db.Agentes.Max(a => a.ID) + 1;
-            } else {
+            }
+            else {
                 novoID = 1;
             }
             agente.ID = novoID; //atribuir o ID deste Agente
-
-
             // ***************************************************************************************************
             // outra hipótese de validar a atribuição de ID
             // try { }
@@ -88,14 +87,13 @@ namespace Multas.Controllers
             string caminho = "";
 
             /// primeiro que tudo, há que grarantir que existe imagem
-             if (carregaFotografia!=null) {
+             if (carregaFotografia!= null) {
                 // a imagem existe
                 agente.Fotografia = nomeFicheiro;
                 // definir o nome do ficheiro e o seu caminho
                 caminho = Path.Combine(Server.MapPath("~/imagens/"), nomeFicheiro);
             }
-             else
-            {
+             else {
                 //não foi submetida a imagem
 
                 // gerar mensagem de erro, para elucidar o utilizador do erro
@@ -104,7 +102,6 @@ namespace Multas.Controllers
                 // redirecionar o utilizador para a View, para que ele corrija os dados
                 return View(agente);
             }
-
              /// O que fazer para a imagem:
             /// escolher o nome da imagem
             /// formatar o tamanho da imagem ---> fazer em casa
@@ -115,8 +112,7 @@ namespace Multas.Controllers
             // ModelState.IsValid ---> confronta os dados recebidos como o modelo, para verificar
             // se o que recebeu é o que deveria ter sido recebido
             if (ModelState.IsValid) {
-                try
-                {
+                try {
                     // adiciona o Agente à estrutura de dados
                     db.Agentes.Add(agente);
                     // efetuam um COMMIT à BD
@@ -138,16 +134,15 @@ namespace Multas.Controllers
         }
 
         // GET: Agentes/Edit/5
-        public ActionResult Edit(int? id)
-        {
+        public ActionResult Edit(int? id) {
             if (id == null) {
                 // return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                    return RedirectToAction("Index");
             }
             Agentes agentes = db.Agentes.Find(id);
-            if (agentes == null)
-            {
-                return HttpNotFound();
+            if (agentes == null) {
+                // return HttpNotFound();
+                return RedirectToAction("Index");
             }
             return View(agentes);
         }
@@ -157,17 +152,34 @@ namespace Multas.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Nome,Fotografia,Esquadra")] Agentes agentes)
-        {
-            if (ModelState.IsValid)
-            {
+        public ActionResult Edit([Bind(Include = "ID,Nome,Fotografia,Esquadra")] Agentes agente,
+                                                             HttpPostedFileBase carregaFotografia) {
+
+            // variável auxiliar
+            string caminho = "";
+            string nomeFicheiro = "Agente_" + agente.ID + ".jpg";
+
+            // Se foi carregada uma nova fotografia, guardar a fotografia
+            if (carregaFotografia != null) {
+
+                agente.Fotografia = nomeFicheiro;
+
+                caminho = Path.Combine(Server.MapPath("~/imagens/"), nomeFicheiro);
+            }
+
+            if (ModelState.IsValid){
                 // update
-                db.Entry(agentes).State = EntityState.Modified;
+                db.Entry(agente).State = EntityState.Modified;
                 // COMMIT
                 db.SaveChanges();
+
+                if (caminho != "") {
+                    // guardar a nova fotografia no disco rígido
+                    carregaFotografia.SaveAs(caminho);
+                }
                 return RedirectToAction("Index");
             }
-            return View(agentes);
+            return View(agente);
         }
 
         // GET: Agentes/Delete/5
@@ -180,7 +192,8 @@ namespace Multas.Controllers
             Agentes agentes = db.Agentes.Find(id);
 
             if (agentes == null) {
-                return HttpNotFound();
+                // return HttpNotFound();
+                return RedirectToAction("Index");
             }
             return View(agentes);
         }
@@ -189,23 +202,22 @@ namespace Multas.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id) {
-                Agentes agentes = db.Agentes.Find(id);
+                Agentes agente = db.Agentes.Find(id);
             try {
-                db.Agentes.Remove(agentes);
+                db.Agentes.Remove(agente);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
             catch(Exception) {
-                ModelState.AddModelError("", string.Format("Aconteceu um erro na eliminação do Agente '{0}', porque há multas associadas a ele", agentes.Nome));
+                ModelState.AddModelError("", string.Format("Aconteceu um erro na eliminação do Agente '{0}', porque há multas associadas a ele", agente.Nome));
             }
 
-            return View(agentes);
+            //se aqui chego, é porque alguma coisa correu mal
+            return View(agente);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
                 db.Dispose();
             }
             base.Dispose(disposing);
